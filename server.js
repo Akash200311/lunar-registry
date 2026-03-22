@@ -1,14 +1,21 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
-app.use(cors());
+/* ✅ CORS */
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST"]
+}));
+
 app.use(express.json());
 
-// ✅ serve frontend
-app.use(express.static("public"));
+/* ✅ Serve frontend */
+app.use(express.static(path.join(__dirname, "public")));
 
+/* ✅ Temporary database */
 let records = [
   {
     id: "254517",
@@ -27,14 +34,21 @@ let records = [
   }
 ];
 
-/* HOME */
+/* ✅ HOME */
 app.get("/", (req, res) => {
   res.send("🌕 Lunar Property API Running");
 });
 
-/* VERIFY */
+/* ✅ VERIFY */
 app.get("/verify", (req, res) => {
   const { id, fileNo } = req.query;
+
+  if (!id || !fileNo) {
+    return res.status(400).json({
+      status: "error",
+      message: "Missing id or fileNo"
+    });
+  }
 
   const record = records.find(
     r => r.id === id && r.fileNo === fileNo
@@ -47,9 +61,16 @@ app.get("/verify", (req, res) => {
   }
 });
 
-/* PURCHASE */
+/* ✅ PURCHASE */
 app.post("/purchase", (req, res) => {
   const { name } = req.body;
+
+  if (!name) {
+    return res.status(400).json({
+      status: "error",
+      message: "Name is required"
+    });
+  }
 
   const newRecord = {
     id: Math.floor(Math.random() * 1000000).toString(),
@@ -72,7 +93,12 @@ app.post("/purchase", (req, res) => {
   res.json({ status: "success", data: newRecord });
 });
 
-/* START SERVER */
+/* ✅ FALLBACK (NO ERROR VERSION) */
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+/* ✅ START SERVER */
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
