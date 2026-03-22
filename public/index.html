@@ -235,7 +235,8 @@
 
     .map-btn {
       background: linear-gradient(45deg, #4facfe, #00f2fe);
-       color: white;
+      color: white;
+
     }
 
     .download-btn {
@@ -355,7 +356,7 @@ async function verify() {
 
   try {
     const [res] = await Promise.all([
-      fetch(`http://localhost:3000/verify?id=${id}&fileNo=${fileNo}`),
+    fetch(`/verify?id=${id}&fileNo=${fileNo}`),
       new Promise(r => setTimeout(r, 1200))
     ]);
 
