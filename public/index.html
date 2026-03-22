@@ -318,7 +318,7 @@ async function verify() {
     return;
   }
 
-  const res = await fetch(`http://localhost:3000/verify?id=${id}&fileNo=${fileNo}`);
+  const res = await   fetch(`/verify?id=${id}&fileNo=${fileNo}`);
   const data = await res.json();
 
   if (data.status === "valid") {
